@@ -1,8 +1,3 @@
-/*
-I think you should review the different bloc builders available.
-https://bloclibrary.dev/#/flutterbloccoreconcepts?id=bloc-widgets
-*/
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,3 @@
-// I think this user bloc thing is not really necessary. It's not really actually doing anything. You can just have 1 auth bloc.
-
 part of 'user_bloc.dart';
 
 abstract class UserState extends Equatable {

@@ -1,11 +1,11 @@
-/*
-You don't need context.watch inside a bloc builder.
-*/
+import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'bloc/attendees_bloc.dart';
 import 'bloc/authentication_bloc.dart';
 import 'bloc/user_bloc.dart';
 import 'cubit/guestbook_cubit.dart';
@@ -37,6 +37,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider<GuestbookCubit>(
           create: (context) => GuestbookCubit(context.read<UserBloc>()),
+        ),
+        BlocProvider<AttendeesBloc>(
+          create: (context) => AttendeesBloc(context.read<UserBloc>()),
         )
       ],
       child: MaterialApp(
@@ -84,18 +87,40 @@ class HomePage extends StatelessWidget {
           const Paragraph(
             'Join us for a day full of Firebase Workshops and Pizza!',
           ),
-          const Divider(
-            height: 8,
-            thickness: 1,
-            indent: 8,
-            endIndent: 8,
-            color: Colors.grey,
-          ),
-          BlocBuilder<UserBloc, UserState>(
-            builder: (context, state) {
+          Builder(
+            builder: (context) {
+              final User? user = context.select<UserBloc, User?>((bloc) => bloc.state.user);
+              final AttendeesBloc attendessBloc = context.watch<AttendeesBloc>();
+
               return Column(
                 children: <Widget>[
-                  if (context.watch<UserBloc>().state.user != null) ...[
+                  if (user != null) ...[
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Paragraph('${attendessBloc.state.attendees} people going'),
+                    ),
+                    YesNoSelection(
+                        state: attendessBloc.state.isAttending ? Attending.yes : Attending.no,
+                        onSelection: (selection) {
+                          switch (selection) {
+                            case Attending.no:
+                              attendessBloc.add(RemoveAttendee());
+                              break;
+
+                            case Attending.yes:
+                              attendessBloc.add(AddAttendee());
+                              break;
+                            default:
+                              print('this should not be happening');
+                          }
+                        }),
+                    const Divider(
+                      height: 8,
+                      thickness: 1,
+                      indent: 8,
+                      endIndent: 8,
+                      color: Colors.grey,
+                    ),
                     const Header('Discussion'),
                     GuestBook(
                       addMessage: (message) =>

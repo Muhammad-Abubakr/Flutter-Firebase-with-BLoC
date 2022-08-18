@@ -26,6 +26,7 @@ class GuestbookCubit extends Cubit<GuestbookState> {
 
     // we will only fetch the data if the user is logged in
     if (_user != null) {
+      print("guestbook cubit => ${_user}");
       fetchGuestbookData();
     }
   }
@@ -36,9 +37,10 @@ class GuestbookCubit extends Cubit<GuestbookState> {
     _guestbookSubscription = FirebaseFirestore.instance
         .collection('guestbook')
         .orderBy('timestamp', descending: true)
+        .limit(10)
         .snapshots()
         .listen((snapshot) {
-      // creating a list of map of string, dynamic to temporarily
+      // creating a List of Guestbook to temporarily
       // store the querysnapshot instance
       List<Guestbook> tempStorage = [];
 
