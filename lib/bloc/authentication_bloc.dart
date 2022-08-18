@@ -1,3 +1,15 @@
+/*
+Couple issues here.
+1. Your bloc is way too tightly coupled with firebase authentication. Also I don't recommend initializing your firebase app in a bloc.
+2. Your _registerUserHandler and _signInEmailPasswordHandler isn't really even utilizing bloc. It's just calling firebase methods. 
+
+Overall, I'm not sure if this works but even if it did, I wouldn't say this is how bloc is intended to be used. Remember that bloc is a
+state management tool. You emit events and and update state based on your events. There isn't much of that going on in here.
+
+I'm not exactly an expert with bloc yet but I think overall this needs some work. You can check my repo or also refer to this one:
+https://github.com/felangel/bloc/tree/master/examples/flutter_todos/lib/todos_overview/bloc
+*/
+
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
